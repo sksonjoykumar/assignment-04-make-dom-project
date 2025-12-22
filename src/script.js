@@ -9,23 +9,32 @@ const modalDesc = document.getElementById('modal-desc');
 const closeModal = document.getElementById('close-modal');
 const modalImg = document.getElementById('modal-img');
 
+// search html elements
+const searchInput = document.getElementById('search-input');
+const searchBtn = document.getElementById('search-btn');
+
 // get all product data
-const allProducts = async () => {
+const allProducts = async (query = '') => {
   try {
     // show loader
     loader.classList.remove('hidden');
+    productDiv.innerHTML = '';
 
     let res = await fetch(
       `https://www.themealdb.com/api/json/v1/1/search.php?s=`
     );
+    let data = await res.json();
+    const meals = data.meals;
+    console.log(data);
+
+    // const filterProduct = data.filter(item =>
+    //   item.strMeal.toLowerCase().includes(searchInput.toLowerCase())
+    // );
+
     // error message
     if (!res.ok) {
       console.log(`Http error ${res.status}`);
     }
-
-    let data = await res.json();
-    const meals = data.meals;
-    console.log(data);
 
     // hidden loader
     loader.classList.add('hidden');
@@ -63,6 +72,7 @@ const allProducts = async () => {
     loader.classList.add('hidden');
   }
 };
+
 /**
  * Modal Logic Functions
  */
@@ -91,4 +101,44 @@ window.addEventListener('click', event => {
   }
 });
 
+// search logic
+// handleSearch function
+// const handleSearch = () => {
+//   const value = searchInput.value.trim();
+//   allProducts(value);
+//   console.log(value);
+// };
+
+// // search button click
+// searchBtn.addEventListener('click', handleSearch);
+
+// // trigger on enter press
+// searchInput.addEventListener('keypress', e => {
+//   if (e.key === 'Enter') {
+//     handleSearch();
+//   }
+// });
+
+// allProducts function call
 allProducts();
+
+// scrollToTop
+const topBtn = document.getElementById('scroll-top');
+
+window.onscroll = function () {
+  scrollFunction();
+};
+window.scrollTo({ top: 0, behavior: 'smooth' });
+
+function scrollFunction() {
+  if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+    topBtn.style.display = 'block';
+  } else {
+    topBtn.style.display = 'none';
+  }
+}
+
+function topFunction() {
+  document.body.scrollTop = 0;
+  document.documentElement.scrollTop = 0;
+}

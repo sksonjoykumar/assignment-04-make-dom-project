@@ -63,16 +63,18 @@
       <!-- banner section end -->
 
       <!-- product section start -->
-      <div class="px-8 md:px-28 my-6">
+      <div class="px-8 md:px-28 my-6 relative">
         <div class="flex justify-center max-w-2xl mx-auto">
           <input
             type="search"
             class="px-2 py-1.5 border border-gray-300 rounded-l-md text-sm focus:outline-1 focus:outline-gray-500 w-full"
             name="search"
-            id=""
+            id="search-input"
             placeholder="Search..."
+            onchange="handleSearch()"
           />
           <button
+            id="search-btn"
             type="button"
             class="bg-[#FBBD23] px-3 text-white cursor-pointer hover:bg-[#fdc330] transition-all duration-200"
           >
@@ -112,6 +114,18 @@
             </div>
           </div>
         </template>
+
+        <div
+          class="flex justify-end bg-red-500 text-white fixed right-20 bottom-20 rounded-lg"
+        >
+          <button
+            id="scroll-top"
+            onClick="topFunction()"
+            class="p-2 px-3 text-lg cursor-pointer "
+          >
+            Top
+          </button>
+        </div>
       </div>
       <!-- product section end -->
       <!-- modal -->
