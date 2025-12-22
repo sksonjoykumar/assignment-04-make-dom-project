@@ -1,4 +1,4 @@
-// 1. Select DOM Elements
+// Select DOM Elements
 const productDiv = document.getElementById('parent-products');
 const loader = document.getElementById('loader');
 
@@ -8,6 +8,7 @@ const modalTitle = document.getElementById('modal-title');
 const modalDesc = document.getElementById('modal-desc');
 const closeModal = document.getElementById('close-modal');
 const modalImg = document.getElementById('modal-img');
+
 // get all product data
 const allProducts = async () => {
   try {
