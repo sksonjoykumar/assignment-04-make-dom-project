@@ -13,69 +13,91 @@ const modalImg = document.getElementById('modal-img');
 const searchInput = document.getElementById('search-input');
 const searchBtn = document.getElementById('search-btn');
 
-// get all product data
-const allProducts = async (query = '') => {
+// getAllMeals function
+const getAllMeals = async () => {
   try {
-    // show loader
     loader.classList.remove('hidden');
     productDiv.innerHTML = '';
 
-    let res = await fetch(
-      `https://www.themealdb.com/api/json/v1/1/search.php?s=`
+    const res = await fetch(
+      'https://www.themealdb.com/api/json/v1/1/search.php?s='
     );
-    let data = await res.json();
-    const meals = data.meals;
-    console.log(data);
+    const data = await res.json();
 
-    // const filterProduct = data.filter(item =>
-    //   item.strMeal.toLowerCase().includes(searchInput.toLowerCase())
-    // );
-
-    // error message
-    if (!res.ok) {
-      console.log(`Http error ${res.status}`);
-    }
-
-    // hidden loader
     loader.classList.add('hidden');
 
-    if (meals) {
-      meals.forEach(meal => {
-        const template = document.getElementById('product-card-template');
-        const cardClone = template.content.cloneNode(true);
-        // html elements
-        const img = cardClone.querySelector('.meal-img');
-        const title = cardClone.querySelector('.meal-name');
-        const desc = cardClone.querySelector('.meal-info');
-        const btn = cardClone.querySelector('.view-details-btn');
-
-        //  set api data
-        img.src = meal.strMealThumb;
-        img.alt = meal.strMeal;
-        title.textContent = meal.strMeal;
-        desc.textContent = meal.strInstructions.slice(0, 90) + '...';
-
-        // add click event btn
-        btn.addEventListener('click', () => {
-          openModal(meal);
-        });
-        productDiv.appendChild(cardClone);
-      });
-    } else {
+    if (!data.meals) {
       productDiv.innerHTML =
         '<p class="text-center w-full">No meals found.</p>';
+      return;
     }
-    // forEach
+
+    renderMeals(data.meals);
   } catch (error) {
-    console.log(error.message);
-    // hidden
+    console.log(error);
     loader.classList.add('hidden');
   }
 };
 
-/**
- * Modal Logic Functions
- */
+// searchMeal function
+const searchMeals = async foodName => {
+  try {
+    loader.classList.remove('hidden');
+    productDiv.innerHTML = '';
+
+    const res = await fetch(
+      `https://www.themealdb.com/api/json/v1/1/search.php?s=${foodName}`
+    );
+    const data = await res.json();
+
+    loader.classList.add('hidden');
+
+    if (!data.meals) {
+      productDiv.innerHTML =
+        '<p class="text-center w-full">No meals found.</p>';
+      return;
+    }
+    renderMeals(data.meals);
+  } catch (error) {
+    console.log(error);
+    loader.classList.add('hidden');
+  }
+};
+
+const getMealById = async id => {
+  try {
+    const res = await fetch(
+      `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`
+    );
+    const data = await res.json();
+
+    if (data.meals) {
+      openModal(data.meals[0]);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// renderMeals function
+const renderMeals = meals => {
+  meals.forEach(meal => {
+    const template = document.getElementById('product-card-template');
+    const cardClone = template.content.cloneNode(true);
+
+    cardClone.querySelector('.meal-img').src = meal.strMealThumb;
+    cardClone.querySelector('.meal-img').alt = meal.strMeal;
+    cardClone.querySelector('.meal-name').textContent = meal.strMeal;
+    cardClone.querySelector('.meal-info').textContent =
+      meal.strInstructions.slice(0, 110) + '...';
+    cardClone
+      .querySelector('.view-details-btn')
+      .addEventListener('click', () => getMealById(meal.idMeal));
+    productDiv.appendChild(cardClone);
+  });
+};
+
+// openModal function
 const openModal = meal => {
   modalImg.src = meal.strMealThumb;
   modalImg.alt = meal.strMeal;
@@ -86,41 +108,38 @@ const openModal = meal => {
   document.body.style.overflow = 'hidden';
 };
 
+// hideModal function
 const hideModal = () => {
   modal.classList.add('hidden');
   document.body.style.overflow = 'auto';
 };
 
-// Event Listeners
 closeModal.addEventListener('click', hideModal);
 
-window.addEventListener('click', event => {
-  // Check if the click was on the backdrop (the element with ID 'product-modal')
-  if (event.target === modal) {
+window.addEventListener('click', e => {
+  if (e.target === modal) {
     hideModal();
   }
 });
 
-// search logic
 // handleSearch function
-// const handleSearch = () => {
-//   const value = searchInput.value.trim();
-//   allProducts(value);
-//   console.log(value);
-// };
+const handleSearch = () => {
+  const value = searchInput.value.trim();
 
-// // search button click
-// searchBtn.addEventListener('click', handleSearch);
+  if (!value) {
+    getAllMeals();
+  } else {
+    searchMeals(value);
+  }
+};
 
-// // trigger on enter press
-// searchInput.addEventListener('keypress', e => {
-//   if (e.key === 'Enter') {
-//     handleSearch();
-//   }
-// });
+searchBtn.addEventListener('click', handleSearch);
 
-// allProducts function call
-allProducts();
+searchInput.addEventListener('keypress', e => {
+  if (e.key === 'Enter') {
+    handleSearch();
+  }
+});
 
 // scrollToTop
 const topBtn = document.getElementById('scroll-top');
@@ -142,3 +161,6 @@ function topFunction() {
   document.body.scrollTop = 0;
   document.documentElement.scrollTop = 0;
 }
+
+// getAllMeals function call
+getAllMeals();

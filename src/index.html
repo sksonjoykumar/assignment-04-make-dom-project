@@ -16,6 +16,12 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
+    <!-- css style -->
+    <style>
+      :root {
+        scroll-behavior: smooth;
+      }
+    </style>
   </head>
   <body>
     <!-- max-w-337.5  px-10 md:px-24-->
@@ -116,14 +122,14 @@
         </template>
 
         <div
-          class="flex justify-end bg-red-500 text-white fixed right-20 bottom-20 rounded-lg"
+          class="flex justify-end bg-[#FBBD23] text-white fixed right-20 bottom-20 rounded-lg"
         >
           <button
             id="scroll-top"
             onClick="topFunction()"
-            class="p-2 px-3 text-lg cursor-pointer "
+            class="p-2 px-3 text-lg cursor-pointer"
           >
-            Top
+            <i class="fa-solid fa-arrow-up"></i>
           </button>
         </div>
       </div>
